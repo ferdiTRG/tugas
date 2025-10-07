@@ -20,7 +20,7 @@ class courseclass:
         self.muridd = []
 
     def __repr__(self):   
-            return f"{self.course.name}-{self.section} ({self.dosen})"
+            return f"{self.course.nama}-{self.section} ({self.dosen})"
         
 class room:
     def __init__ (self, nama, kapasitas, waktu_tersedia):
