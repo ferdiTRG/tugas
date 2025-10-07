@@ -48,7 +48,7 @@ courses_data = [
            jumlah_class=2), 
     course("Pemrosesan Bahasa Alami", 
            ["Bima Prihasto"],  
-           jumlah_classs=1), 
+           jumlah_class=1), 
     course("Pengantar Informatika", ["Muchammad Chandra Cahyo Utomo"], 
            jumlah_class=2), 
     course("Pengantar Kecerdasan Artifisial", 
