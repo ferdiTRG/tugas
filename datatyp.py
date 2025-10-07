@@ -17,7 +17,7 @@ class courseclass:
         self.course = course
         self.section = section
         self.dosen = dosen 
-        self.students = []
+        self.muridd = []
 
         def __repr__(self):   
             return f"{self.course.name}-{self.section} ({self.dosen})"

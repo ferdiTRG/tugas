@@ -37,7 +37,7 @@ def angkatan24():
                                             "struktur data"]))
          
     for i in range (70,99):
-         akt24.append(murid(f"112410{i}", ["Aljabar Linier dan Geometri", 
+         akt24.append(murid(f"112410{i}", ["aljabar Linier dan Geometri", 
                                             "Arsitektur Komputer", 
                                             "pengantar kecerdasan artifisial", 
                                             "sistem operasi", "struktur data", 
@@ -57,7 +57,7 @@ def angkatan23():
 
     for i in range (10,40):
          akt23.append(murid(f"112310{i}",  ["Implementasi dan Pengujian Perangkat Lunak", 
-                                            "Pengantar Kecerdasan Artifisial", 
+                                            "pengantar kecerdasan artifisial", 
                                             "Manajemen Basis Data", 
                                             "Pemrograman Fungsional",]))
 
