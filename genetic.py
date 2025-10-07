@@ -10,23 +10,23 @@ class Schedule:
     self.timeslots = timeslots 
     self.assignments = {} 
 
-def randomize(self): 
+ def randomize(self): 
     for cclass in self.course_classes: 
         valid_pairs = [(room, ts) for room in self.rooms for ts in self.timeslots if 
-ts.slot_id in room.available_times] 
+ts.slot_id in room.waktu_tersedia] 
         self.assignments[cclass] = random.choice(valid_pairs) 
 
-def fitness(self, muridd): 
+ def fitness(self, muridd): 
     penalty = 0 
 
     room_usage = {} 
-    Dosen_usage = {} 
+    dosen_usage = {} 
     murid_usage = {} 
 
     for cclass, (room, ts) in self.assignments.items(): 
 
         # Ketersediaan ruangan 
-        if ts.slot_id not in room.available_times: 
+        if ts.slot_id not in room.waktu_tersedia: 
             penalty += 100_000 
 
         # Konflik ruangan 
@@ -37,16 +37,15 @@ def fitness(self, muridd):
             room_usage[key_room] = cclass 
 
         # Konflik dosen 
-        key_Dosen = (cclass.Dosen, ts) 
-        if key_Dosen in Dosen_usage: 
+        key_dosen = (cclass.dosen, ts) 
+        if key_dosen in dosen_usage: 
             penalty += 100_000 
         else: 
-            Dosen_usage[key_Dosen] = cclass 
-
-        # Kelebihan kapasitas, kecil aja 
-        over = len(cclass.muridd) - room.capacity 
-        if over > 30:  # abaikan sampai 20 siswa 
-            penalty += over-30  # hanya kelebihan > 20 dihitung 
+            dosen_usage[key_dosen] = cclass 
+ 
+        over = len(cclass.muridd) - room.kapasitas 
+        if over > 30:  
+            penalty += over-30  
 
 # Konflik mahasiswa 
     for murid in muridd: 
@@ -75,10 +74,10 @@ def crossover(p1, p2):
 def mutate(schedule): 
     cclass = random.choice(schedule.course_classes) 
     valid_pairs = [(room, ts) for room in schedule.rooms for ts in 
-schedule.timeslots if ts.slot_id in room.available_times] 
+schedule.timeslots if ts.slot_id in room.waktu_tersedia] 
     schedule.assignments[cclass] = random.choice(valid_pairs) 
 
-def assign_Dosens_to_sections(courses): 
+def assign_dosens_to_sections(courses): 
     """Assign dosen to course sections using round-robin or random assignment"""
     course_classes = [] 
 
@@ -87,16 +86,16 @@ def assign_Dosens_to_sections(courses):
 
         for i in range(course.jumlah_class): 
             section_letter = chr(65 + i) 
-            Dosen = available_dosen[i % len(available_dosen)] 
+            dosen = available_dosen[i % len(available_dosen)] 
 
-            course_class = courseclass(course, section_letter, Dosen) 
+            course_class = courseclass(course, section_letter, dosen) 
             course_classes.append(course_class) 
 
     return course_classes 
 
 def genetic_algorithm(courses, rooms, timeslots, muridd, population_size=50, 
                     generations=100): 
-    course_classes = assign_Dosens_to_sections(courses) 
+    course_classes = assign_dosens_to_sections(courses) 
 
     for murid in muridd: 
         for cnama in murid.courses: 
@@ -146,14 +145,14 @@ for cclass, (room, ts) in best.assignments.items():
     murid_count = len(cclass.muridd) 
     print(f"{cclass} -> {room.nama} di {ts} ({murid_count} mahasiswa)") 
 
-print("\n=== Jadwal Dosen ===") 
-Dosen_schedule = {} 
+print("\n=== Jadwal dosen ===") 
+dosen_schedule = {} 
 for cclass, (room, ts) in best.assignments.items(): 
-    if cclass.Dosen not in Dosen_schedule: 
-        Dosen_schedule[cclass.Dosen] = [] 
-    Dosen_schedule[cclass.Dosen].append((cclass, room, ts)) 
+    if cclass.dosen not in dosen_schedule: 
+        dosen_schedule[cclass.dosen] = [] 
+    dosen_schedule[cclass.dosen].append((cclass, room, ts)) 
 
-for Dosen, assignments in Dosen_schedule.items(): 
-    print(f"\n{Dosen}:") 
+for dosen, assignments in dosen_schedule.items(): 
+    print(f"\n{dosen}:") 
     for cclass, room, ts in assignments: 
         print(f"  {cclass.course.nama}-{cclass.section} di {room.nama} pada {ts}") 
