@@ -9,7 +9,7 @@ class murid:
 class course:
     def __init__ (self, nama, dosen, jumlah_class=1):
         self.nama = nama
-        self.dosen = dosen
+        self.dosen = dosen if isinstance(dosen, list) else [dosen]
         self.jumlah_class = jumlah_class
 
 class courseclass:
@@ -20,7 +20,7 @@ class courseclass:
         self.students = []
 
         def __repr__(self):   
-            return f"({self.course.nama}-{self.section}) ({self.dosen})"
+            return f"{self.course.name}-{self.section} ({self.dosen})"
         
 class room:
     def __init__ (self, nama, kapasitas, waktu_tersedia):

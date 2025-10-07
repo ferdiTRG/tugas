@@ -16,12 +16,12 @@ def randomize(self):
 ts.id in room.available_times] 
         self.assignments[cclass] = random.choice(valid_pairs) 
 
-def fitness(self, students): 
+def fitness(self, muridd): 
     penalty = 0 
 
     room_usage = {} 
     teacher_usage = {} 
-    student_usage = {} 
+    murid_usage = {} 
 
     for cclass, (room, ts) in self.assignments.items(): 
 
@@ -44,15 +44,15 @@ def fitness(self, students):
             teacher_usage[key_teacher] = cclass 
 
         # Kelebihan kapasitas, kecil aja 
-        over = len(cclass.students) - room.capacity 
+        over = len(cclass.muridd) - room.capacity 
         if over > 30:  # abaikan sampai 20 siswa 
             penalty += over-30  # hanya kelebihan > 20 dihitung 
 
 # Konflik mahasiswa 
-    for student in students: 
+    for murid in muridd: 
         taken = {} 
         for cclass in self.course_classes: 
-            if cclass.course.name in student.courses and student in cclass.students: 
+            if cclass.course.name in murid.courses and murid in cclass.muridd: 
                 room, ts = self.assignments[cclass] 
                 if ts in taken: 
                     penalty += 100_000 
@@ -83,26 +83,26 @@ def assign_teachers_to_sections(courses):
     course_classes = [] 
 
     for course in courses: 
-        available_teachers = course.teachers.copy() 
+        available_dosen = course.dosen.copy() 
 
-        for i in range(course.num_classes): 
+        for i in range(course.jumlah_class): 
             section_letter = chr(65 + i) 
-            teacher = available_teachers[i % len(available_teachers)] 
+            teacher = available_dosen[i % len(available_dosen)] 
 
             course_class = courseclass(course, section_letter, teacher) 
             course_classes.append(course_class) 
 
     return course_classes 
 
-def genetic_algorithm(courses, rooms, timeslots, students, population_size=50, 
+def genetic_algorithm(courses, rooms, timeslots, muridd, population_size=50, 
                     generations=100): 
     course_classes = assign_teachers_to_sections(courses) 
 
-    for student in students: 
-        for cname in student.courses: 
-            selected_classes = [c for c in course_classes if c.course.name == cname] 
-            target = min(selected_classes, key=lambda x: len(x.students)) 
-            target.students.append(student) 
+    for murid in muridd: 
+        for cname in murid.courses: 
+            selected_classes = [c for c in course_classes if c.course.nama == cname] 
+            target = min(selected_classes, key=lambda x: len(x.muridd)) 
+            target.muridd.append(murid) 
 
     population = [] 
     for _ in range(population_size): 
@@ -111,7 +111,7 @@ def genetic_algorithm(courses, rooms, timeslots, students, population_size=50,
         population.append(s) 
 
     for gen in range(generations): 
-        scored = [(s.fitness(students), s) for s in population] 
+        scored = [(s.fitness(muridd), s) for s in population] 
         scored.sort(key=lambda x: x[0]) 
         best_score, best_schedule = scored[0] 
         print(f"Gen {gen} best fitness = {best_score}") 
@@ -135,16 +135,16 @@ def genetic_algorithm(courses, rooms, timeslots, students, population_size=50,
 
 if __name__ == "__main__":
 
-    students = angkatan24() + angkatan23() + angkatan25() 
+    muridd = angkatan24() + angkatan23() + angkatan25() 
 
-best = genetic_algorithm(courses_data, rooms_data, timeslots_data, students, 
+best = genetic_algorithm(courses_data, rooms_data, timeslots_data, muridd, 
                             population_size=1000, 
                             generations=100) 
 
 print("\n=== Jadwal Terbaik ===") 
 for cclass, (room, ts) in best.assignments.items(): 
-    student_count = len(cclass.students) 
-    print(f"{cclass} -> {room.name} di {ts} ({student_count} mahasiswa)") 
+    murid_count = len(cclass.muridd) 
+    print(f"{cclass} -> {room.name} di {ts} ({murid_count} mahasiswa)") 
 
 print("\n=== Jadwal Dosen ===") 
 teacher_schedule = {} 
