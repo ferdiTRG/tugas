@@ -19,7 +19,7 @@ class courseclass:
         self.dosen = dosen 
         self.muridd = []
 
-        def __repr__(self):   
+    def __repr__(self):   
             return f"{self.course.name}-{self.section} ({self.dosen})"
         
 class room:
